@@ -7,7 +7,66 @@ import time
 random.seed(time.time())
 
 from typing import List, Dict
+from copy import deepcopy
 
+class Tile:
+    def __init__(self, game, i, j, n, e, s, w):
+        self.game = game
+        self.i = i
+        self.j = j
+
+        self.n = n
+        self.e = e
+        self.s = s
+        self.w = w
+
+    def update(self):
+        # TODO animation
+        return
+
+    def draw(self):
+        # TODO draw triangles
+
+        # TODO draw numbers
+
+        return
+
+class Tetravex:
+    def __init__(self, game, board_size=3):
+        self.board_size = board_size
+        self.board = [[None for i in range(board_size)] for j in range(board_size*2)]
+        
+        for i in range(board_size):
+            for j in range(board_size):
+                n, e, s, w = [random.randint(0,9) for _ in range(4)]
+                self.board[i][j] = Tile(game, i, j, n, e, s, w)
+                t = self.board[i][j]
+
+                # compare up
+                if i > 0:
+                    t.n = self.board[i-1][j].s
+                # compare left
+                if j > 0:
+                    t.w = self.board[i][j-1].e
+        
+    def make_move(self, ai, aj, bi, bj):
+        # get grids
+        g1 = self.board[ai][aj]
+        g2 = self.board[bi][bj]
+        
+        # set internal coordinates
+        if isinstance(g1, Tile):
+            g1.i = bi
+            g1.j = bj
+        if isinstance(g2, Tile):
+            g2.i = ai
+            g2.j = aj
+
+        # swap tiles a and b
+        g1, g2 = g2, g1
+
+        # TODO check solved state
+        return
 
 class Square:
     def __init__(self, game, grid=0, i=0, j=0, color=(100, 100, 100)):
@@ -32,6 +91,7 @@ class Square:
     def draw(self):
         pygame.draw.rect(self.game.screen, self.color, self.rect)
         pygame.draw.rect(self.game.screen, self.border_color, self.rect, width=2)
+
 
 class TetravexPygame:
     def get_random_color(self):
