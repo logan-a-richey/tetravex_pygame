@@ -1,5 +1,25 @@
 # tile.py
 
+import pygame
+from random import randint
+
+# lazy colors
+#COLORS = {}
+#for i in range(10):
+#    COLORS[i] = tuple([randint(100,200) for _ in range(3)])
+COLORS = {
+    0: '#66c5cc',
+    1: '#f6cf71',
+    2: '#f89c74',
+    3: '#dcb0f2',
+    4: '#87c55f',
+    5: '#5b80d0',
+    6: '#fe88b1',
+    7: '#8be0a4',
+    8: '#b497e7',
+    9: '#b3b3b3'
+}
+
 class Tile:
     def __init__(self, game, n, e, s, w):
         self.game = game
@@ -26,10 +46,20 @@ class Tile:
         BL = (x, y + TS)
         BR = (x + TS, y + TS)
 
-        pygame.draw.polygon(self.game.screen, (255, 255, 255), [M, TL, TR])
-        pygame.draw.polygon(self.game.screen, (200, 200, 200), [M, TR, BR])
-        pygame.draw.polygon(self.game.screen, (150, 150, 150), [M, BR, BL])
-        pygame.draw.polygon(self.game.screen, (100, 100, 100), [M, BL, TL])
+        pygame.draw.polygon(self.game.screen, COLORS[self.n], [M, TL, TR])
+        pygame.draw.polygon(self.game.screen, COLORS[self.e], [M, TR, BR])
+        pygame.draw.polygon(self.game.screen, COLORS[self.s], [M, BR, BL])
+        pygame.draw.polygon(self.game.screen, COLORS[self.w], [M, BL, TL])
 
         pygame.draw.rect(self.game.screen, (0, 0, 0), (x, y, TS, TS), width=2)
 
+        # Draw numbers
+        self.draw_text_center(self.n, x + TS // 2, y + TS * 0.15)
+        self.draw_text_center(self.e, x + TS * 0.85, y + TS // 2)
+        self.draw_text_center(self.s, x + TS // 2, y + TS * 0.85)
+        self.draw_text_center(self.w, x + TS * 0.15, y + TS // 2)
+
+    def draw_text_center(self, value, cx, cy):
+        text = self.game.font.render(str(value), True, (0, 0, 0))
+        rect = text.get_rect(center=(cx, cy))
+        self.game.screen.blit(text, rect)

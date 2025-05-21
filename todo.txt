@@ -1,0 +1,16 @@
+# TODO
+
+add solution check
+add sound effects for;
+- tile swap
+- solution
+add timer
+
+scenes:
+- title scene
+- gameplay scene
+- highscores scene
+- options scene
+
+database or data file for persistence
+

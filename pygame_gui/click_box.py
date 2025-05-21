@@ -11,11 +11,12 @@ class ClickBox:
 
         self.color_fill = (210, 180, 140)
         self.color_border = (0, 0, 0)
-
+        
+        margin_offset = self.game.SPACING
         x_offset = grid * (game.BOARD_SIZE * game.TILE_SIZE + game.SPACING)
         self.rect = pygame.Rect(
-            j * game.TILE_SIZE + x_offset,
-            i * game.TILE_SIZE,
+            j * game.TILE_SIZE + x_offset + margin_offset,
+            i * game.TILE_SIZE + margin_offset,
             game.TILE_SIZE,
             game.TILE_SIZE
         )
