@@ -2,6 +2,8 @@
 
 import pygame
 
+from src.pygame_version.colors import GRID_COLORS, COLOR_BLACK
+
 class ClickBox:
     def __init__(self, game, grid, i, j):
         self.game = game
@@ -9,14 +11,18 @@ class ClickBox:
         self.i = i
         self.j = j
 
-        self.color_fill = (210, 180, 140)
-        self.color_fill_hl = tuple([v * 0.8 for v in self.color_fill])
-        self.color_fill_cl = tuple([v * 0.6 for v in self.color_fill])
+        # different shades of tan
+        #self.color_fill = (210, 180, 140)
+        #self.color_fill_hl = tuple([v * 0.8 for v in self.color_fill])
+        #self.color_fill_cl = tuple([v * 0.6 for v in self.color_fill])
 
-        self.color_border = (0, 0, 0)
+        self.color_fill = GRID_COLORS["idle"]
+        self.color_fill_hl = GRID_COLORS["hover"]
+        self.color_fill_cl = GRID_COLORS["click"]
+
+        self.color_border = COLOR_BLACK
         
         self.bad = 0
-        self.color_bad = (255,0,0,200)
 
         margin_offset = self.game.SPACING
         x_offset = grid * (game.BOARD_SIZE * game.TILE_SIZE + game.SPACING)
@@ -44,7 +50,7 @@ class ClickBox:
         pygame.draw.rect(self.game.screen, color, self.rect)
         
         # clickbox border
-        pygame.draw.rect(self.game.screen, self.color_border, self.rect, width=2)
+        pygame.draw.rect(self.game.screen, self.color_border, self.rect, width=3)
 
         if self.tile:
             self.tile.update_target(self.rect.x, self.rect.y)

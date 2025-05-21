@@ -12,10 +12,13 @@ warnings.filterwarnings(
 
 import pygame
 import random
+from typing import List, Dict, Tuple
 
 from src.pygame_version.logger import get_logger
 from src.pygame_version.click_box import ClickBox
 from src.pygame_version.tile import Tile
+from src.pygame_version.colors import COLOR_BACKGROUND, COLOR_RED, COLOR_WHITE
+from src.pygame_version.bad_rect import BadRect
 
 class Game:
     def __init__(self, board_size=3):
@@ -38,17 +41,23 @@ class Game:
         
         # game setup
         self.font = pygame.font.SysFont(None, 36)
-        self.mouse_pos = (0, 0)
-        self.mouse_down = False
-        self.solved = 0 
-        self.running = True
+        self.show_answer_label = False
+
+        self.mouse_pos: Tuple[int, int] = (0, 0)
+        self.mouse_down: bool = False
+        
+        self.solved: bool = False
+        self.running: bool = True
+        
+        self.grids: Dict[int, List[List[ClickBox]]] = {0: [], 1: []}
+        self.bad_rects: List[BadRect] = []
         self.init_board()
 
     def init_board(self):
         # init grid
         self.solved = 0
-        self.grids = {0: [], 1: []}
-        for grid in [0, 1]:
+        self.grids: Dict[int, List[List[ClickBox]]] = {0: [], 1: []}
+        for grid in range(2):
             for i in range(self.BOARD_SIZE):
                 row = []
                 for j in range(self.BOARD_SIZE):
@@ -69,6 +78,7 @@ class Game:
                 if j > 0:
                     tile.w = tiles[i * self.BOARD_SIZE + (j - 1)].e
 
+                tile.update_colors()
                 tiles.append(tile)
 
         # shuffle tiles
@@ -146,12 +156,13 @@ class Game:
 
     def solution_check(self):
         is_solved = True
+        self.bad_rects.clear()
 
         for i in range(self.BOARD_SIZE):
             for j in range(self.BOARD_SIZE):
+                is_bad_rect = False
                 cb = self.grids[1][i][j]
-                cb.bad = False  # reset bad flag
-
+                
                 if not cb.tile:
                     is_solved = False
                     continue
@@ -162,7 +173,7 @@ class Game:
                     if not adj:
                         is_solved = False
                     if adj and cb.tile.n != adj.s:
-                        cb.bad = True
+                        is_bad_rect = True
                         is_solved = False
                     
                 # Check east
@@ -171,7 +182,7 @@ class Game:
                     if not adj:
                         is_solved = False
                     if adj and cb.tile.e != adj.w:
-                        cb.bad = True
+                        is_bad_rect = True
                         is_solved = False
 
                 # Check south
@@ -180,7 +191,7 @@ class Game:
                     if not adj:
                         is_solved = False
                     if adj and cb.tile.s != adj.n:
-                        cb.bad = True
+                        is_bad_rect = True
                         is_solved = False
 
                 # Check west
@@ -189,13 +200,21 @@ class Game:
                     if not adj:
                         is_solved = False
                     if adj and cb.tile.w != adj.e:
-                        cb.bad = True
+                        is_bad_rect = True
                         is_solved = False
 
+                if is_bad_rect:
+                    bad_rect = BadRect(self, cb)
+                    self.bad_rects.append(bad_rect)
+        
         self.solved = is_solved
         if self.solved == True:
-            self.logger.info("Puzzle Solved!")
-        
+            msg = "Puzzle Solved! "
+            for i in range(self.BOARD_SIZE):
+                for j in range(self.BOARD_SIZE):
+                    msg += "{} ".format(self.grids[1][i][j].tile.get_string())
+            self.logger.info(msg)
+
         return is_solved
 
     def handle_events(self):
@@ -217,7 +236,7 @@ class Game:
     
     def draw(self):
         # background
-        self.screen.fill("#22aaaa")
+        self.screen.fill(COLOR_BACKGROUND)
         
         # draw clickable grid:
         for i in range(self.BOARD_SIZE):
@@ -232,24 +251,15 @@ class Game:
             self.held_tile.draw()
 
         # draw bad hologram
-        for i in range(self.BOARD_SIZE):
-            for j in range(self.BOARD_SIZE):
-                cb = self.grids[1][i][j]
-                if cb.bad:
-                    s = pygame.Surface( (cb.rect.w, cb.rect.h))
-                    s.set_alpha(100)
-                    s.fill("#ff0000")
-                    pos = (cb.rect.x, cb.rect.y)
-                    self.screen.blit(s, pos)
+        if self.mouse_down == False:
+            for bad_rect in self.bad_rects:
+                bad_rect.draw()
 
         # display solution text:
         if self.solved:
-
-            text = self.font.render("Puzzle Solved!", True, "#000000")
-            pos = (
-                self.SCREEN_WIDTH // 2 ,
-                self.SCREEN_HEIGHT - self.SPACING // 2
-            )
+            msg = "Puzzle Solved! "
+            text = self.font.render(msg, True, COLOR_WHITE)
+            pos = (self.SCREEN_WIDTH // 2, self.SCREEN_HEIGHT - self.SPACING // 2)
             rect = text.get_rect(center=(pos))
             self.screen.blit(text, rect)
 
@@ -262,4 +272,3 @@ class Game:
             self.draw()
         
         pygame.quit()
-
