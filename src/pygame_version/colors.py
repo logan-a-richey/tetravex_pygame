@@ -8,7 +8,7 @@ TILE_COLORS = {
     3: "#859900",  # Green
     4: "#cb4b16",  # Orange
     5: "#2aa198",  # Cyan
-    6: "#268bd2",  # Blue
+    6: "#207bd2",  # Blue
     7: "#d33682",  # Magenta
     8: "#6c71c4",  # Violet
     9: "#808080", # Gray

@@ -5,6 +5,8 @@
 Tetravex is a logic-based puzzle game where you drag and drop numbered tiles into a grid so that adjacent edges match. This implementation is a fast, responsive desktop version built using Pygame, designed for flexibility and customization.
 
 ---
+## 📷 Screenshot
+![Tetravex Screenshot](src/assets/screenshot.png)
 
 ## 🚀 Setup Instructions
 
