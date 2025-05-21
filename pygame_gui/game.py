@@ -53,6 +53,11 @@ class Game:
 
         # shuffle tiles
         random.shuffle(tiles)
+        
+        print(self.BOARD_SIZE, end=" ")
+        for t in tiles:
+            print("{}{}{}{}".format(t.n, t.e, t.s, t.w), end=" ")
+        print()
 
         # rearrange tiles
         for i in range(self.BOARD_SIZE):
