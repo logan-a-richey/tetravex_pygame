@@ -7,6 +7,8 @@ from random import randint
 #COLORS = {}
 #for i in range(10):
 #    COLORS[i] = tuple([randint(100,200) for _ in range(3)])
+
+# pastel colors
 COLORS = {
     0: '#66c5cc',
     1: '#f6cf71',
@@ -37,10 +39,15 @@ class Tile:
 
     def draw(self):
         TS = self.game.TILE_SIZE
+
+        # relative pixel position of tile
         x = int(self.x)
         y = int(self.y)
+
+        # pixel center of tile
         M = (x + TS // 2, y + TS // 2)
 
+        # pixel corners of square
         TL = (x, y)
         TR = (x + TS, y)
         BL = (x, y + TS)
@@ -51,9 +58,10 @@ class Tile:
         pygame.draw.polygon(self.game.screen, COLORS[self.s], [M, BR, BL])
         pygame.draw.polygon(self.game.screen, COLORS[self.w], [M, BL, TL])
 
+        # tile border
         pygame.draw.rect(self.game.screen, (0, 0, 0), (x, y, TS, TS), width=2)
 
-        # Draw numbers
+        # draw numbers
         self.draw_text_center(self.n, x + TS // 2, y + TS * 0.15)
         self.draw_text_center(self.e, x + TS * 0.85, y + TS // 2)
         self.draw_text_center(self.s, x + TS // 2, y + TS * 0.85)
@@ -63,3 +71,4 @@ class Tile:
         text = self.game.font.render(str(value), True, (0, 0, 0))
         rect = text.get_rect(center=(cx, cy))
         self.game.screen.blit(text, rect)
+

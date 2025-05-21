@@ -15,7 +15,7 @@ class Game:
         self.SCREEN_HEIGHT = self.BOARD_SIZE * self.TILE_SIZE + self.SPACING * 2
         
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-        pygame.display.set_caption("Tetravex Grids")
+        pygame.display.set_caption("Tetravex {} x {}".format(self.BOARD_SIZE, self.BOARD_SIZE))
         
         self.font = pygame.font.SysFont(None, 36)
         self.mouse_pos = (0, 0)
@@ -103,15 +103,22 @@ class Game:
             else:
                 cb.tile = self.held_tile
         else:
-            # Invalid drop — snap back to origin
+            # Invalid drop: snap back to origin
             if self.held_tile_origin and not self.held_tile_origin.tile:
                 self.held_tile_origin.tile = self.held_tile
             else:
+                # TODO - debug
                 # Optional fallback: discard or hold
                 pass
 
         self.held_tile = None
         self.held_tile_origin = None
+
+        self.solution_check()
+
+    def solution_check(self):
+        # TODO
+        pass
         
     def handle_events(self):
         for event in pygame.event.get():
@@ -123,7 +130,7 @@ class Game:
                 self.on_mouse_up()
     
     def draw(self):
-        self.screen.fill("#77aaaa")
+        self.screen.fill("#22aaaa")
         for grid_rows in self.grids.values():
             for row in grid_rows:
                 for cb in row:
@@ -141,4 +148,6 @@ class Game:
             self.mouse_pos = pygame.mouse.get_pos()
             self.handle_events()
             self.draw()
+        
         pygame.quit()
+

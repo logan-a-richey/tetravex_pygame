@@ -10,6 +10,9 @@ class ClickBox:
         self.j = j
 
         self.color_fill = (210, 180, 140)
+        self.color_fill_hl = tuple([v * 0.8 for v in self.color_fill])
+        self.color_fill_cl = tuple([v * 0.6 for v in self.color_fill])
+
         self.color_border = (0, 0, 0)
         
         margin_offset = self.game.SPACING
@@ -20,14 +23,18 @@ class ClickBox:
             game.TILE_SIZE,
             game.TILE_SIZE
         )
-
-        self.tile = None  # The tile currently on this square
+        
+        # the tile currently on this square
+        self.tile = None  
 
     def draw(self):
         mouse_over = self.rect.collidepoint(self.game.mouse_pos)
         color = self.color_fill
         if mouse_over:
-            color = tuple([v * 0.8 for v in self.color_fill]) if not self.game.mouse_down else tuple([v * 0.6 for v in self.color_fill])
+            if self.game.mouse_down:
+                color = self.color_fill_cl
+            else:
+                color = self.color_fill_hl
         
         pygame.draw.rect(self.game.screen, color, self.rect)
         pygame.draw.rect(self.game.screen, self.color_border, self.rect, width=2)
