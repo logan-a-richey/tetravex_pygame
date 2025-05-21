@@ -1,25 +1,18 @@
 # tile.py
 
 import pygame
-from random import randint
 
-# lazy colors
-#COLORS = {}
-#for i in range(10):
-#    COLORS[i] = tuple([randint(100,200) for _ in range(3)])
-
-# pastel colors
 COLORS = {
-    0: '#66c5cc',
-    1: '#f6cf71',
-    2: '#f89c74',
-    3: '#dcb0f2',
-    4: '#87c55f',
-    5: '#5b80d0',
-    6: '#fe88b1',
-    7: '#8be0a4',
-    8: '#b497e7',
-    9: '#b3b3b3'
+    0: '#e6194b',  # Red
+    1: '#f58231',  # Orange
+    2: '#ffe119',  # Yellow
+    3: '#bfef45',  # Lime
+    4: '#3cb44b',  # Green
+    5: '#42d4f4',  # Cyan
+    6: '#4363d8',  # Blue
+    7: '#911eb4',  # Violet
+    8: '#f032e6',  # Pink
+    9: '#a9a9a9'   # Gray
 }
 
 class Tile:
@@ -32,6 +25,9 @@ class Tile:
 
         self.x = 0
         self.y = 0
+        
+    def get_string(self) -> str:
+        return "{}{}{}{}".format(self.n, self.e, self.s, self.w)
 
     def update_target(self, tx, ty):
         self.x += (tx - self.x) * 0.1

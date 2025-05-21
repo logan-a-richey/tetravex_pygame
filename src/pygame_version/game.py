@@ -1,13 +1,32 @@
 # game.py
 
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
+import warnings
+warnings.filterwarnings(
+    "ignore",
+    message="Your system is avx2 capable.*",
+    category=RuntimeWarning
+)
+
 import pygame
-from pygame_gui.click_box import ClickBox
-from pygame_gui.tile import Tile
 import random
+
+from src.pygame_version.logger import get_logger
+from src.pygame_version.click_box import ClickBox
+from src.pygame_version.tile import Tile
 
 class Game:
     def __init__(self, board_size=3):
+        # logger setup
+        self.logger = get_logger(__name__)
+        self.logger.info("Starting Pygame!")
+
+        # pygame setup
         pygame.init()
+
+        # screen setup
         self.TILE_SIZE = 100
         self.BOARD_SIZE = board_size
         self.SPACING = 50 # space between the two grids
@@ -17,13 +36,12 @@ class Game:
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
         pygame.display.set_caption("Tetravex {} x {}".format(self.BOARD_SIZE, self.BOARD_SIZE))
         
+        # game setup
         self.font = pygame.font.SysFont(None, 36)
         self.mouse_pos = (0, 0)
         self.mouse_down = False
         self.solved = 0 
-
         self.running = True
-
         self.init_board()
 
     def init_board(self):
@@ -56,10 +74,12 @@ class Game:
         # shuffle tiles
         random.shuffle(tiles)
         
-        print(self.BOARD_SIZE, end=" ")
-        for t in tiles:
-            print("{}{}{}{}".format(t.n, t.e, t.s, t.w), end=" ")
-        print()
+        # log message
+        msg = "New puzzle instantiated: {} {}".format(
+            self.BOARD_SIZE,
+            " ".join([t.get_string() for t in tiles])
+        )
+        self.logger.info(msg)
 
         # rearrange tiles
         for i in range(self.BOARD_SIZE):
@@ -173,13 +193,23 @@ class Game:
                         is_solved = False
 
         self.solved = is_solved
-        print("[INFO] Puzzle Solved!")
+        if self.solved == True:
+            self.logger.info("Puzzle Solved!")
+        
         return is_solved
 
     def handle_events(self):
         for event in pygame.event.get():
+            # exit events
             if event.type == pygame.QUIT:
                 self.running = False
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                    return
+
+            # mouse events
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.on_mouse_down()
             elif event.type == pygame.MOUSEBUTTONUP:
@@ -214,6 +244,7 @@ class Game:
 
         # display solution text:
         if self.solved:
+
             text = self.font.render("Puzzle Solved!", True, "#000000")
             pos = (
                 self.SCREEN_WIDTH // 2 ,
