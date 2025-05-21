@@ -20,13 +20,15 @@ class Game:
         self.font = pygame.font.SysFont(None, 36)
         self.mouse_pos = (0, 0)
         self.mouse_down = False
-        
+        self.solved = 0 
+
         self.running = True
 
         self.init_board()
 
     def init_board(self):
         # init grid
+        self.solved = 0
         self.grids = {0: [], 1: []}
         for grid in [0, 1]:
             for i in range(self.BOARD_SIZE):
@@ -70,9 +72,10 @@ class Game:
         self.held_tile = None
 
     def get_clickbox_at(self, pos):
-        for grid_rows in self.grids.values():
-            for row in grid_rows:
-                for cb in row:
+        for g in range(2):
+            for i in range(self.BOARD_SIZE):
+                for j in range(self.BOARD_SIZE):
+                    cb = self.grids[g][i][j]
                     if cb.rect.collidepoint(pos):
                         return cb
         return None
@@ -122,9 +125,57 @@ class Game:
         self.solution_check()
 
     def solution_check(self):
-        # TODO
-        pass
-        
+        is_solved = True
+
+        for i in range(self.BOARD_SIZE):
+            for j in range(self.BOARD_SIZE):
+                cb = self.grids[1][i][j]
+                cb.bad = False  # reset bad flag
+
+                if not cb.tile:
+                    is_solved = False
+                    continue
+
+                # Check north
+                if i > 0:
+                    adj = self.grids[1][i-1][j].tile
+                    if not adj:
+                        is_solved = False
+                    if adj and cb.tile.n != adj.s:
+                        cb.bad = True
+                        is_solved = False
+                    
+                # Check east
+                if j < self.BOARD_SIZE - 1:
+                    adj = self.grids[1][i][j+1].tile
+                    if not adj:
+                        is_solved = False
+                    if adj and cb.tile.e != adj.w:
+                        cb.bad = True
+                        is_solved = False
+
+                # Check south
+                if i < self.BOARD_SIZE - 1:
+                    adj = self.grids[1][i+1][j].tile
+                    if not adj:
+                        is_solved = False
+                    if adj and cb.tile.s != adj.n:
+                        cb.bad = True
+                        is_solved = False
+
+                # Check west
+                if j > 0:
+                    adj = self.grids[1][i][j-1].tile
+                    if not adj:
+                        is_solved = False
+                    if adj and cb.tile.w != adj.e:
+                        cb.bad = True
+                        is_solved = False
+
+        self.solved = is_solved
+        print("[INFO] Puzzle Solved!")
+        return is_solved
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -135,16 +186,41 @@ class Game:
                 self.on_mouse_up()
     
     def draw(self):
+        # background
         self.screen.fill("#22aaaa")
-        for grid_rows in self.grids.values():
-            for row in grid_rows:
-                for cb in row:
-                    cb.draw()
-
+        
+        # draw clickable grid:
+        for i in range(self.BOARD_SIZE):
+            for j in range(self.BOARD_SIZE):
+                self.grids[0][i][j].draw()
+                self.grids[1][i][j].draw()
+        
+        # draw clicked tile:
         if self.held_tile:
             x, y = pygame.mouse.get_pos()
             self.held_tile.update_target(x - self.TILE_SIZE // 2, y - self.TILE_SIZE // 2)
             self.held_tile.draw()
+
+        # draw bad hologram
+        for i in range(self.BOARD_SIZE):
+            for j in range(self.BOARD_SIZE):
+                cb = self.grids[1][i][j]
+                if cb.bad:
+                    s = pygame.Surface( (cb.rect.w, cb.rect.h))
+                    s.set_alpha(100)
+                    s.fill("#ff0000")
+                    pos = (cb.rect.x, cb.rect.y)
+                    self.screen.blit(s, pos)
+
+        # display solution text:
+        if self.solved:
+            text = self.font.render("Puzzle Solved!", True, "#000000")
+            pos = (
+                self.SCREEN_WIDTH // 2 ,
+                self.SCREEN_HEIGHT - self.SPACING // 2
+            )
+            rect = text.get_rect(center=(pos))
+            self.screen.blit(text, rect)
 
         pygame.display.flip()
 

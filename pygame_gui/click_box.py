@@ -15,6 +15,9 @@ class ClickBox:
 
         self.color_border = (0, 0, 0)
         
+        self.bad = 0
+        self.color_bad = (255,0,0,200)
+
         margin_offset = self.game.SPACING
         x_offset = grid * (game.BOARD_SIZE * game.TILE_SIZE + game.SPACING)
         self.rect = pygame.Rect(
@@ -29,6 +32,8 @@ class ClickBox:
 
     def draw(self):
         mouse_over = self.rect.collidepoint(self.game.mouse_pos)
+        
+        # clickbox fill
         color = self.color_fill
         if mouse_over:
             if self.game.mouse_down:
@@ -37,8 +42,11 @@ class ClickBox:
                 color = self.color_fill_hl
         
         pygame.draw.rect(self.game.screen, color, self.rect)
+        
+        # clickbox border
         pygame.draw.rect(self.game.screen, self.color_border, self.rect, width=2)
 
         if self.tile:
             self.tile.update_target(self.rect.x, self.rect.y)
             self.tile.draw()
+
