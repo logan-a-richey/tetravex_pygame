@@ -46,9 +46,11 @@ class GameManager:
         self.current_scene: BaseScene = TitleScene(self)
     
     def on_mouse_down(self):
+        self.is_mouse_down = True
         self.current_scene.on_mouse_down()
 
     def on_mouse_up(self):
+        self.is_mouse_down = False
         self.current_scene.on_mouse_up()
 
     def poll_events(self):
