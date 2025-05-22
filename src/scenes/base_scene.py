@@ -8,10 +8,14 @@ class BaseScene:
         pass
 
     @abstractmethod
-    def update(self):
-        pass
+    def update(self): pass
+    
+    @abstractmethod
+    def on_mouse_down(self): pass
 
     @abstractmethod
-    def draw(self):
-        pass
+    def on_mouse_up(self): pass
+
+    @abstractmethod
+    def draw(self): pass
 
