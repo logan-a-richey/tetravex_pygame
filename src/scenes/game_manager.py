@@ -34,12 +34,16 @@ class GameManager:
         self.screen = pygame.display.set_mode(screen_dim)
         pygame.display.set_caption("Tetravex")
 
-        self.running: bool = False
+        # fonts
+        self.font = pygame.font.SysFont(None, 36)
         
-        self.current_scene: BaseScene = TitleScene(self)
-        
+        # mouse
         self.mouse_pos: Tuple[int, int] = (0,0)
         self.is_mouse_down: bool = False
+        
+        # game specific
+        self.running: bool = False
+        self.current_scene: BaseScene = TitleScene(self)
     
     def on_mouse_down(self):
         pass
