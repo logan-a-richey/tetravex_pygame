@@ -1,10 +1,11 @@
 # gameplay_scene.py
 
 import pygame
-from scenes.base_scene import BaseScene
-#from scenes.title_scene import TitleScene
-from core.button import Button
 
+from scenes.base_scene import BaseScene 
+
+# TODO
+# from core.button import Button
 # from assets.board import Board
 # from assets.tile import Tile
 # from assets.bad_rect import BadRect
@@ -37,4 +38,5 @@ class GameplayScene(BaseScene):
         pass
 
     def draw(self):
+        # background
         self.manager.screen.fill("#404040")

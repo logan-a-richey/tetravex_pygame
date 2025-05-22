@@ -6,7 +6,6 @@ from typing import List, Tuple
 
 from scenes.base_scene import BaseScene
 from core.button import Button
-from scenes.gameplay_scene import GameplayScene
 
 class TitleScene(BaseScene):
     def __init__(self, manager):
@@ -14,8 +13,8 @@ class TitleScene(BaseScene):
         
         
         self.buttons: List[Button] = [
-            Button(self.manager, func=lambda: self.manager.queue_scene(GameplayScene(self.manager, board_size=3)), text="Play"),
-            Button(self.manager, func=lambda: self.manager.exit_game(), text="Exit"),
+            Button(self.manager, func=lambda: self.manager.change_scene("gameplay_scene", board_size=3), text="Play"),
+            Button(self.manager, func=lambda: self.manager.change_scene("exit"), text="Exit"),
         ]
         
         margin = 50
@@ -54,6 +53,10 @@ class TitleScene(BaseScene):
             b.on_mouse_up()
 
     def draw(self):
+        # background
+        self.manager.screen.fill("#404040")
+
+        # buttons
         for b in self.buttons:
             b.draw()
 

@@ -1,9 +1,13 @@
 # game_manager.py
 
 import os
+import warnings
+from typing import Tuple, List, Dict, Union
+
+# hide pygame warnings
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
-import warnings
+# hide pygame warnings
 warnings.filterwarnings(
     "ignore",
     message="Your system is avx2 capable.*",
@@ -11,18 +15,17 @@ warnings.filterwarnings(
 )
 
 import pygame
-from core.logger import get_logger
-from typing import Tuple, List, Dict, Union
 
+# project imports
+from core.logger import get_logger
 from scenes.base_scene import BaseScene
 from scenes.title_scene import TitleScene
-#from scenes.level_select_scene import LevelSelectScene
 from scenes.gameplay_scene import GameplayScene
-#from scenes.option_scene import OptionScene
-#from scenes.highscore_scene import HighscoreScene
 from user_interface.colors import GameColors
 
 class GameManager:
+    ''' Controls game state and logic '''
+
     def __init__(self):
         # logging setup
         self.logger = get_logger(__name__)
@@ -77,11 +80,17 @@ class GameManager:
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_up()
 
-    def queue_scene(self, scene_constructor: BaseScene):
-        self._pending_scene = scene_constructor
-
-    def exit_game(self):
-        self.running = False
+    def change_scene(self, scene_name: str, *args, **kwargs):
+        if scene_name == "title_scene":
+            self._pending_scene = TitleScene(self)
+        elif scene_name == "gameplay_scene":
+            board_size = kwargs.get("board_size", 3)
+            self._pending_scene = GameplayScene(self, board_size)
+        elif scene_name == "exit":
+            self.running = False
+        else:
+            self.logger.error("Invalid scene name {}. Exiting program".format(scene_name))
+            exit(1)
     
     def update_scene(self):
         if self._pending_scene:
