@@ -11,12 +11,12 @@ warnings.filterwarnings(
 )
 
 import pygame
-from src.pygame_version.logger import get_logger
+from core.logger import get_logger
 
 from typing import Tuple, List, Dict
 
 from scenes.base_scene import BaseScene
-#from scenes.title_scene import TitleScene
+from scenes.title_scene import TitleScene
 #from scenes.level_select_scene import LevelSelectScene
 from scenes.gameplay_scene import GameplayScene
 #from scenes.option_scene import OptionScene
@@ -32,7 +32,7 @@ class GameManager:
         pygame.init()
         screen_dim: Tuple[int, int] = (400, 400) # default will change later
         self.screen = pygame.display.set_mode(screen_dim)
-        pygame.dispaly.set_caption("Tetravex")
+        pygame.display.set_caption("Tetravex")
 
         self.running: bool = False
         
@@ -41,22 +41,43 @@ class GameManager:
         self.mouse_pos: Tuple[int, int] = (0,0)
         self.is_mouse_down: bool = False
     
-    def poll_events():
+    def on_mouse_down(self):
         pass
 
-    def update_scene():
+    def on_mouse_up(self):
+        pass
+
+    def poll_events(self):
+        self.mouse_pos = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            # exit events
+            if event.type == pygame.QUIT:
+                self.running = False
+                return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.running = False
+                    return
+
+            # mouse events
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                self.on_mouse_down()
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.on_mouse_up()
+
+    def update_scene(self):
         self.current_scene.update()
     
-    def draw_scene():
+    def draw_scene(self):
         self.current_scene.draw()
         pygame.display.flip()
-
 
     def run(self):
         self.running = True
 
         while self.running:
-            self.get_mouse_events()
+            self.poll_events()
             self.update_scene()
             self.draw_scene()
         

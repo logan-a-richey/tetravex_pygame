@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # main.py
 
-from game_manager import GameManager
+from scenes.game_manager import GameManager
 
 def main():
     gm = GameManager()
