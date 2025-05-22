@@ -12,8 +12,7 @@ warnings.filterwarnings(
 
 import pygame
 from core.logger import get_logger
-
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union
 
 from scenes.base_scene import BaseScene
 from scenes.title_scene import TitleScene
@@ -44,26 +43,13 @@ class GameManager:
         
         # game specific
         self.running: bool = False
-        self.current_scene: BaseScene = TitleScene(self)
+        self.current_scene: Union[BaseScene, None] = TitleScene(self)
+        self._pending_scene: Union[BaseScene, None] = None
 
         # set color theme
         self.color_picker = GameColors()
         self.color_scheme = self.color_picker.colors
 
-    def change_scene(self, scene_string: str):
-        valid_scenes = ["title", "gameplay"]
-        if scene_string not in valid_scenes:
-            self.logger.error("\'{}\' not in valid_scenes = [{}]".format(
-                scene_string,
-                ", ".format(valid_scenes)
-            ))
-            exit(1)
-        
-        if scene_string == "title":
-            self.current_scene = TitleScene(self)
-        elif scene_string == "gameplay":
-            self.current_scene = GameplayScene(self)
-        
     def on_mouse_down(self):
         self.is_mouse_down = True
         self.current_scene.on_mouse_down()
@@ -91,7 +77,16 @@ class GameManager:
             elif event.type == pygame.MOUSEBUTTONUP:
                 self.on_mouse_up()
 
+    def queue_scene(self, scene_constructor: BaseScene):
+        self._pending_scene = scene_constructor
+
+    def exit_game(self):
+        self.running = False
+    
     def update_scene(self):
+        if self._pending_scene:
+            self.current_scene = self._pending_scene
+        
         self.current_scene.update()
     
     def draw_scene(self):

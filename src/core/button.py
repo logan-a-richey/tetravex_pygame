@@ -13,14 +13,15 @@ class Button:
         text_color=(0, 0, 0),
         pos=(0, 0), 
         dim=(200, 100),
-        color=(200, 200, 200)
+        color=(200, 200, 200),
+        round=10
     ):
         self.manager = manager
         self.func = func
         self.text = text
         self.text_color = text_color
-
         self.rect = pygame.Rect(*pos, *dim)
+        self.round = round
 
         # Color states
         self.color_idle = color
@@ -43,8 +44,8 @@ class Button:
 
     def draw(self):
         # Draw button
-        pygame.draw.rect(self.manager.screen, self.color, self.rect)
-        pygame.draw.rect(self.manager.screen, (0, 0, 0), self.rect, width=2)
+        pygame.draw.rect(self.manager.screen, self.color, self.rect, border_radius=self.round)
+        pygame.draw.rect(self.manager.screen, (0, 0, 0), self.rect, width=2, border_radius=self.round)
 
         # Update text position in case the button moves
         self.text_rect.center = self.rect.center

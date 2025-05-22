@@ -2,6 +2,9 @@
 
 import pygame
 from scenes.base_scene import BaseScene
+#from scenes.title_scene import TitleScene
+from core.button import Button
+
 # from assets.board import Board
 # from assets.tile import Tile
 # from assets.bad_rect import BadRect
@@ -11,7 +14,6 @@ class GameplayScene(BaseScene):
     
     def __init__(self, manager, board_size=3):
         self.manager = manager
-
 
         # objects in scene
         self.BOARD_SIZE: int = board_size
@@ -28,6 +30,7 @@ class GameplayScene(BaseScene):
         self.manager.screen = pygame.display.set_mode(screen_dim)
         pygame.display.set_caption("Tetravex {}x{}".format(self.BOARD_SIZE, self.BOARD_SIZE)) 
 
+        #self.back_button = Button(self.manager, lambda: self.manager.queue_scene(TitleScene), text="Back", color=(0,0,255))
         pass
 
     def update(self):

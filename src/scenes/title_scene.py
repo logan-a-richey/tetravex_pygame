@@ -1,38 +1,46 @@
 # title_scene.py
 
+import pygame
+
+from typing import List, Tuple
+
 from scenes.base_scene import BaseScene
 from core.button import Button
+from scenes.gameplay_scene import GameplayScene
 
 class TitleScene(BaseScene):
     def __init__(self, manager):
         self.manager = manager
-
-        # objects in scene
-        # TODO
-        # title text: "Tetravex"
-        pos = (50,50)
-        dim = (300,100)
-
-        self.buttons = [
-            Button(
-                self.manager, 
-                func=self.handle_play, 
-                text="Play", 
-                pos=pos, 
-                dim=dim,
-                color=(0,200,200)
-            )
+        
+        
+        self.buttons: List[Button] = [
+            Button(self.manager, func=lambda: self.manager.queue_scene(GameplayScene(self.manager, board_size=3)), text="Play"),
+            Button(self.manager, func=lambda: self.manager.exit_game(), text="Exit"),
         ]
+        
+        margin = 50
+        button_w, button_h = 400, 100
 
+        for i, button in enumerate(self.buttons):
+            button.rect.x = margin
+            button.rect.y = margin + (i * (margin + button_h))
+            button.rect.w = button_w
+            button.rect.h = button_h
+        
+        num_buttons = len(self.buttons)
+        screen_dim = (
+            margin * 2 + button_w,
+            margin * 2 + (num_buttons * (button_h + margin) )
+        )
+
+        self.manager.screen = pygame.display.set_mode(screen_dim)
+        
         # button: Play
+        # TODO
         # button: Highscore
         # button: Option
         # button: Quit
         pass
-
-    def handle_play(self):
-        print("Go to Gameplay scene")
-        self.manager.change_scene("gameplay")
 
     def update(self):
         for b in self.buttons:
