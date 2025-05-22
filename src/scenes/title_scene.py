@@ -32,6 +32,7 @@ class TitleScene(BaseScene):
 
     def handle_play(self):
         print("Go to Gameplay scene")
+        self.manager.change_scene("gameplay")
 
     def update(self):
         for b in self.buttons:

@@ -21,6 +21,7 @@ from scenes.title_scene import TitleScene
 from scenes.gameplay_scene import GameplayScene
 #from scenes.option_scene import OptionScene
 #from scenes.highscore_scene import HighscoreScene
+from user_interface.colors import GameColors
 
 class GameManager:
     def __init__(self):
@@ -44,7 +45,25 @@ class GameManager:
         # game specific
         self.running: bool = False
         self.current_scene: BaseScene = TitleScene(self)
-    
+
+        # set color theme
+        self.color_picker = GameColors()
+        self.color_scheme = self.color_picker.colors
+
+    def change_scene(self, scene_string: str):
+        valid_scenes = ["title", "gameplay"]
+        if scene_string not in valid_scenes:
+            self.logger.error("\'{}\' not in valid_scenes = [{}]".format(
+                scene_string,
+                ", ".format(valid_scenes)
+            ))
+            exit(1)
+        
+        if scene_string == "title":
+            self.current_scene = TitleScene(self)
+        elif scene_string == "gameplay":
+            self.current_scene = GameplayScene(self)
+        
     def on_mouse_down(self):
         self.is_mouse_down = True
         self.current_scene.on_mouse_down()

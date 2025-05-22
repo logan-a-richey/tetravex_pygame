@@ -1,5 +1,6 @@
 # game.py
 
+'''
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
@@ -19,6 +20,7 @@ from src.pygame_version.click_box import ClickBox
 from src.pygame_version.tile import Tile
 from src.pygame_version.colors import COLOR_BACKGROUND, COLOR_RED, COLOR_WHITE
 from src.pygame_version.bad_rect import BadRect
+'''
 
 class Game:
     def __init__(self, board_size=3):
