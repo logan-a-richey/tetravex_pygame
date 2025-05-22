@@ -20,7 +20,7 @@ class TitleScene(BaseScene):
                 text="Play", 
                 pos=pos, 
                 dim=dim,
-                color=(50,50,200)
+                color=(0,200,200)
             )
         ]
 
