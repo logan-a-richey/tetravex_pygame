@@ -1,0 +1,41 @@
+# scene composer
+scenes:
+    title
+    level_select
+    gameplay
+    highscore
+    option
+
+title_scene:
+    <button text="gameplay" scene="gameplay">
+    <button text="highscores" scene="highscores">
+    <button text="preferences" scene="preferences">
+    <button text="exit">
+    
+gameplay_scene:
+    <left_grid> <right_grid>
+    <back_button scene="main">
+
+level_select
+    <3x3>
+    <4x4>
+    <5x5>
+    <6x6>
+    <back_button scene="main">
+
+pref_scene:
+    <color_theme>
+        0: solarized
+        1: pastel
+        2: vibrant
+        3: grayscale
+    <sounds>
+        0: woodblock
+        1: retro
+        2: felt
+    <back_button scene="main">
+
+highscore_scene:
+    <monospace_table>
+    <back_button scene="main">
+
