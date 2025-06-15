@@ -13,7 +13,7 @@ Tetravex is a logic-based puzzle game where you drag and drop numbered tiles int
 ### 1. Clone the repository
 
 ```bash
-git clone <your_repo_url>
+git clone https://github.com/logan-a-richey/tetravex_pygame.git
 cd tetravex
 ```
 
